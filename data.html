@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Dashboard Data HM & BBM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            padding: 20px 15px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: transform 0.2s;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Filter Section */
+        .filter-card {
+            background: white;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .filter-card h3 {
+            color: #1e293b;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            background: #f8fafc;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+
+        /* Ringkasan Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+
+        .sum-card {
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            transition: transform 0.3s;
+        }
+
+        .sum-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .sum-card h4 {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-bottom: 8px;
+        }
+
+        .sum-card .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .sum-card .unit {
+            font-size: 0.8rem;
+            opacity: 0.75;
+        }
+
+        .card-purple { background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); }
+        .card-blue { background: linear-gradient(135deg, #3b82f6 0%, #0ea5e9 100%); }
+        .card-orange { background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%); }
+        .card-green { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .card-red { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+
+        /* SPK Settings */
+        .spk-section {
+            background: white;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 25px;
+        }
+
+        .spk-section h3 {
+            color: #1e293b;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .spk-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .spk-item {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 10px;
+        }
+
+        .spk-item label {
+            font-size: 0.8rem;
+            color: #64748b;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .spk-item input {
+            background: white;
+        }
+
+        .save-spk-btn {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        /* Unit Detail Table */
+        .detail-section {
+            background: white;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 25px;
+        }
+
+        .detail-section h3 {
+            color: #1e293b;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .unit-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+        }
+
+        .unit-card {
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .unit-card:hover {
+            border-color: #6366f1;
+        }
+
+        .unit-card h4 {
+            font-size: 1rem;
+            color: #1e293b;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .unit-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 0.9rem;
+        }
+
+        .unit-row .label { color: #64748b; }
+        .unit-row .value { font-weight: 600; color: #1e293b; }
+        .unit-row .value.remain { color: #10b981; }
+        .unit-row .value.low { color: #f59e0b; }
+        .unit-row .value.critical { color: #ef4444; }
+
+        /* Data Table */
+        .table-section {
+            background: white;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+        }
+
+        .table-section h3 {
+            color: #1e293b;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        th, td {
+            padding: 10px 8px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+        }
+
+        th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-right: 4px;
+        }
+
+        .btn-edit { background: #fef3c7; color: #92400e; }
+        .btn-delete { background: #fee2e2; color: #991b1b; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            width: 100%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h3 {
+            margin-bottom: 18px;
+            color: #1e293b;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-cancel { background: #e2e8f0; color: #475569; }
+        .btn-save { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); color: white; }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #64748b;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 30px;
+            color: #94a3b8;
+        }
+
+        .status-box {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .sukses { background: #dcfce7; color: #166534; display: block !important; }
+        .error { background: #fee2e2; color: #991b1b; display: block !important; }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.3rem; }
+            .summary-grid { grid-template-columns: 1fr 1fr; }
+            .filter-grid { grid-template-columns: 1fr 1fr; }
+            th, td { padding: 8px 4px; font-size: 0.8rem; }
+            .unit-detail-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .summary-grid { grid-template-columns: 1fr; }
+            .filter-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 Dashboard Rangkuman Data</h1>
+            <p>Data dari Google Sheets — Terupdate</p>
+            <button class="refresh-btn" onclick="ambilData()">🔄 Muat Ulang Data</button>
+        </div>
+
+        <!-- Filter -->
+        <div class="filter-card">
+            <h3>🔍 Filter Data</h3>
+            <div class="filter-grid">
+                <div>
+                    <label style="font-size:0.8rem; color:#64748b; margin-bottom:5px; display:block;">Bulan</label>
+                    <select id="filterBulan" onchange="terapkanFilter()">
+                        <option value="">Semua Bulan</option>
+                        <option value="01">Januari</option>
+                        <option value="02">Februari</option>
+                        <option value="03">Maret</option>
+                        <option value="04">April</option>
+                        <option value="05">Mei</option>
+                        <option value="06">Juni</option>
+                        <option value="07">Juli</option>
+                        <option value="08">Agustus</option>
+                        <option value="09">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size:0.8rem; color:#64748b; margin-bottom:5px; display:block;">Tahun</label>
+                    <select id="filterTahun" onchange="terapkanFilter()">
+                        <option value="">Semua Tahun</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size:0.8rem; color:#64748b; margin-bottom:5px; display:block;">Unit</label>
+                    <select id="filterUnit" onchange="terapkanFilter()">
+                        <option value="">Semua Unit</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size:0.8rem; color:#64748b; margin-bottom:5px; display:block;">Lokasi</label>
+                    <select id="filterLokasi" onchange="terapkanFilter()">
+                        <option value="">Semua Lokasi</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ringkasan Utama -->
+        <div class="summary-grid" id="ringkasanUtama">
+            <div class="sum-card card-purple">
+                <h4>⏱️ Total Semua HM Kerja</h4>
+                <div class="value" id="totalHM">0</div>
+                <div class="unit">Jam</div>
+            </div>
+            <div class="sum-card card-blue">
+                <h4>⛽ Total Semua BBM</h4>
+                <div class="value" id="totalBBM">0</div>
+                <div class="unit">Liter</div>
+            </div>
+            <div class="sum-card card-orange">
+                <h4>📝 Jumlah Data</h4>
+                <div class="value" id="jumlahData">0</div>
+                <div class="unit">Catatan</div>
+            </div>
+        </div>
+
+        <!-- Pengaturan SPK -->
+        <div class="spk-section">
+            <h3>📋 Pengaturan SPK (Jam Kerja Target)</h3>
+            <div class="spk-grid" id="spkGrid">
+                <!-- Akan diisi otomatis lewat JS -->
+            </div>
+            <button class="save-spk-btn" onclick="simpanPengaturanSPK()">💾 Simpan SPK</button>
+        </div>
+
+        <!-- Detail Per Unit -->
+        <div class="detail-section">
+            <h3>📈 Ringkasan Per Unit</h3>
+            <div class="unit-detail-grid" id="detailPerUnit">
+                <div class="loading">Memuat data...</div>
+            </div>
+        </div>
+
+        <!-- Tabel Riwayat Data -->
+        <div class="table-section">
+            <h3>
+                📋 Riwayat Data
+                <span style="font-size:0.85rem; color:#64748b; font-weight:normal;">Terfilter: <span id="infoFilter">Semua Data</span></span>
+            </h3>
+            <div id="tabelContainer">
+                <div class="loading">Sedang mengambil data dari Google Sheets...</div>
+            </div>
+        </div>
+
+        <!-- Status Pesan -->
+        <div id="status" class="status-box" style="margin-bottom:25px;"></div>
+    </div>
+
+    <!-- MODAL: Edit Data -->
+    <div class="modal-overlay" id="modalEdit">
+        <div class="modal-content">
+            <h3>✏️ Edit Data</h3>
+            <input type="hidden" id="editId">
+            <input type="hidden" id="editRowIndex">
+            
+            <div class="form-group" style="margin-bottom:12px;">
+                <label style="font-size:0.85rem; color:#475569; margin-bottom:5px; display:block;">Tanggal</label>
+                <input type="date" id="editTanggal">
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+                <label style="font-size:0.85rem; color:#475569; margin-bottom:5px; display:block;">Lokasi</label>
+                <input type="text" id="editLokasi">
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+                <label style="font-size:0.85rem; color:#475569; margin-bottom:5px; display:block;">Unit</label>
+                <select id="editUnit"></select>
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+                <label style="font-size:0.85rem; color:#475569; margin-bottom:5px; display:block;">HM Awal</label>
+                <input type="number" id="editHmAwal">
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+                <label style="font-size:0.85rem; color:#475569; margin-bottom:5px; display:block;">HM Akhir</label>
+                <input type="number" id="editHmAkhir" oninput="hitungEditKerja()">
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+                <label style="font-size:0.85rem; color:#475569; margin-bottom:5px; display:block;">HM Kerja</label>
+                <input type="number" id="editHmKerja" readonly style="background:#f1f5f9;">
+            </div>
+            <div class="form-group" style="margin-bottom:12px;">
+                <label style="font-size:0.85rem; color:#475569; margin-bottom:5px; display:block;">BBM (Liter)</label>
+                <input type="number" step="0.01" id="editBbm">
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="modal-btn btn-cancel" onclick="tutupModal()">Batal</button>
+                <button class="modal-btn btn-save" onclick="simpanEdit()">Simpan Perubahan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // ⚠️ GANTI URL INI DENGAN URL WEB APP KAMU!
+        const URL_GOOGLE_SHEETS = "https://script.google.com/macros/s/AKfycbx6RdiixfxbxTUjESNEuaTtTev39_V25bocxOP54Lj_Cm3SVoxRwHnueVNvX0tFDI3d7Q/exec";
+        // ============================================
+
+        // Daftar Unit
+        const daftarUnit = [
+            "Excavator 01", "Excavator 02", "Excavator 03",
+            "Dozer 01", "Dozer 02", "Truk 01", "Truk 02", "Grader 01"
+        ];
+
+        // Data utama
+        let semuaData = [];
+        let dataTerfilter = [];
+        let pengaturanSPK = {};
+
+        // Inisialisasi
+        document.addEventListener('DOMContentLoaded', function() {
+            muatPengaturanSPK();
+            isiDropdownUnit();
+            isiDropdownTahun();
+            ambilData();
+        });
+
+        // Isi dropdown unit
+        function isiDropdownUnit() {
+            const filterUnit = document.getElementById('filterUnit');
+            const editUnit = document.getElementById('editUnit');
+            
+            daftarUnit.forEach(unit => {
+                filterUnit.innerHTML += `<option value="${unit}">${unit}</option>`;
+                editUnit.innerHTML += `<option value="${unit}">${unit}</option>`;
+            });
+        }
+
+        // Isi dropdown tahun
+        function isiDropdownTahun() {
+            const tahunSekarang = new Date().getFullYear();
+            const filterTahun = document.getElementById('filterTahun');
+            for (let t = tahunSekarang - 5; t <= tahunSekarang + 1; t++) {
+                filterTahun.innerHTML += `<option value="${t}">${t}</option>`;
+            }
+        }
+
+        // Muat SPK dari localStorage
+        function muatPengaturanSPK() {
+            const tersimpan = localStorage.getItem('pengaturanSPK');
+            if (tersimpan) {
+                pengaturanSPK = JSON.parse(tersimpan);
+            } else {
+                // Default SPK
+                daftarUnit.forEach(unit => {
+                    pengaturanSPK[unit] = 0;
+                });
+            }
+            
+            tampilkanPengaturanSPK();
+        }
+
+        // Tampilkan kolom input SPK per unit
+        function tampilkanPengaturanSPK() {
+            const container = document.getElementById('spkGrid');
+            container.innerHTML = '';
+            
+            daftarUnit.forEach(unit => {
+                container.innerHTML += `
+                    <div class="spk-item">
+                        <label>${unit}</label>
+                        <input type="number" id="spk_${unit}" value="${pengaturanSPK[unit] || 0}" placeholder="Jam SPK">
+                    </div>
+                `;
+            });
+        }
+
+        // Simpan SPK
+        function simpanPengaturanSPK() {
+            daftarUnit.forEach(unit => {
+                const nilai = document.getElementById(`spk_${unit}`).value;
+                pengaturanSPK[unit] = parseFloat(nilai) || 0;
+            });
+            localStorage.setItem('pengaturanSPK', JSON.stringify(pengaturanSPK));
+            tampilkanPesan('✅ Pengaturan SPK berhasil disimpan!', 'sukses');
+            hitungSemuaRingkasan();
+        }
+
+        // Ambil data dari Google Sheets
+        async function ambilData() {
+            try {
+                const res = await fetch(URL_GOOGLE_SHEETS);
+                const hasil = await res.json();
+                
+                if (hasil.status === "sukses") {
+                    semuaData = hasil.data || [];
+                    terapkanFilter();
+                    isiDropdownLokasi();
+                    tampilkanPesan('✅ Data berhasil dimuat!', 'sukses');
+                } else {
+                    tampilkanPesan('❌ Gagal mengambil data', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                tampilkanPesan('⚠️ Pastikan URL benar dan sudah disebarkan!', 'error');
+                document.getElementById('tabelContainer').innerHTML = '<div class="no-data">Gagal terhubung ke Google Sheets</div>';
+            }
+        }
+
+        // Isi dropdown lokasi otomatis
+        function isiDropdownLokasi() {
+            const filterLokasi = document.getElementById('filterLokasi');
+            const lokasiUnik = [...new Set(semuaData.map(d => d.lokasi).filter(l => l))];
+            filterLokasi.innerHTML = '<option value="">Semua Lokasi</option>';
+            lokasiUnik.forEach(lok => {
+                filterLokasi.innerHTML += `<option value="${lok}">${lok}</option>`;
+            });
+        }
+
+        // Terapkan semua filter
+        function terapkanFilter() {
+            const bulan = document.getElementById('filterBulan').value;
+            const tahun = document.getElementById('filterTahun').value;
+            const unit = document.getElementById('filterUnit').value;
+            const lokasi = document.getElementById('filterLokasi').value;
+            
+            dataTerfilter = semuaData.filter(d => {
+                let cocok = true;
+                if (bulan) cocok = cocok && d.tanggal.substring(5, 7) === bulan;
+                if (tahun) cocok = cocok && d.tanggal.substring(0, 4) === tahun;
+                if (unit) cocok = cocok && d.unit === unit;
+                if (lokasi) cocok = cocok && d.lokasi === lokasi;
+                return cocok;
+            });
+            
+            // Update info filter
+            let info = "Semua Data";
+            if (bulan || tahun || unit || lokasi) {
+                info = [];
+                if (bulan) info.push(`Bulan: ${document.getElementById('filterBulan').options[document.getElementById('filterBulan').selectedIndex].text}`);
+                if (tahun) info.push(`Tahun: ${tahun}`);
+                if (unit) info.push(`Unit: ${unit}`);
+                if (lokasi) info.push(`Lokasi: ${lokasi}`);
+                info = info.join(' | ');
+            }
+            document.getElementById('infoFilter').textContent = info;
+            
+            hitungSemuaRingkasan();
+            tampilkanDetailPerUnit();
+            tampilkanTabelData();
+        }
+
+        // Hitung semua ringkasan
+        function hitungSemuaRingkasan() {
+            // Total umum
+            const totalHM = dataTerfilter.reduce((sum, d) => sum + (parseFloat(d.hmKerja) || 0), 0);
+            const totalBBM = dataTerfilter.reduce((sum, d) => sum + (parseFloat(d.bbm) || 0), 0);
+            
+            document.getElementById('totalHM').textContent = totalHM.toFixed(1);
+            document.getElementById('totalBBM').textContent = totalBBM.toFixed(1);
+            document.getElementById('jumlahData').textContent = dataTerfilter.length;
+        }
+
+        // Tampilkan detail per unit
+        function tampilkanDetailPerUnit() {
+            const container = document.getElementById('detailPerUnit');
+            const dataPerUnit = {};
+            
+            // Kelompokkan data per unit
+            dataTerfilter.forEach(d => {
+                if (!dataPerUnit[d.unit]) {
+                    dataPerUnit[d.unit] = { hm: 0, bbm: 0, jumlah: 0 };
+                }
+                dataPerUnit[d.unit].hm += parseFloat(d.hmKerja) || 0;
+                dataPerUnit[d.unit].bbm += parseFloat(d.bbm) || 0;
+                dataPerUnit[d.unit].jumlah++;
+            });
+            
+            if (Object.keys(dataPerUnit).length === 0) {
+                container.innerHTML = '<div class="no-data" style="grid-column:1/-1;">Tidak ada data untuk ditampilkan</div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            Object.keys(dataPerUnit).sort().forEach(unit => {
+                const d = dataPerUnit[unit];
+                const spk = pengaturanSPK[unit] || 0;
+                const sisa = spk - d.hm;
+                let sisaClass = 'remain';
+                if (sisa <= 0) sisaClass = 'critical';
+                else if (sisa <= 50) sisaClass = 'low';
+                
+                container.innerHTML += `
+                    <div class="unit-card">
+                        <h4>🚜 ${unit}</h4>
+                        <div class="unit-row">
+                            <span class="label">⏱️ Total HM Kerja</span>
+                            <span class="value">${d.hm.toFixed(1)} jm</span>
+                        </div>
+                        <div class="unit-row">
+                            <span class="label">⛽ Total BBM</span>
+                            <span class="value">${d.bbm.toFixed(1)} L</span>
+                        </div>
+                        <div class="unit-row">
+                            <span class="label">📋 SPK (Target)</span>
+                            <span class="value">${spk.toFixed(1)} jm</span>
+                        </div>
+                        <div class="unit-row">
+                            <span class="label">🔄 Sisa HM</span>
+                            <span class="value ${sisaClass}">${sisa.toFixed(1)} jm</span>
+                        </div>
+                        <div class="unit-row">
+                            <span class="label">📝 Jumlah Catatan</span>
+                            <span class="value">${d.jumlah} kali</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Tampilkan tabel data
+        function tampilkanTabelData() {
+            const container = document.getElementById('tabelContainer');
+            
+            if (dataTerfilter.length === 0) {
+                container.innerHTML = '<div class="no-data">Tidak ada data untuk ditampilkan</div>';
+                return;
+            }
+            
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tanggal</th>
+                            <th>Lokasi</th>
+                            <th>Unit</th>
+                            <th>HM Awal</th>
+                            <th>HM Akhir</th>
+                            <th>HM Kerja</th>
+                            <th>BBM (L)</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${dataTerfilter.map(d => `
+                            <tr>
+                                <td>${d.tanggal}</td>
+                                <td>${d.lokasi}</td>
+                                <td>${d.unit}</td>
+                                <td>${d.hmAwal}</td>
+                                <td>${d.hmAkhir}</td>
+                                <td>${d.hmKerja}</td>
+                                <td>${d.bbm}</td>
+                                <td>
+                                    <button class="action-btn btn-edit" onclick="bukaModalEdit(${d.id})">✏️</button>
+                                    <button class="action-btn btn-delete" onclick="konfirmasiHapus(${d.id})">🗑️</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Buka modal edit
+        function bukaModalEdit(rowIndex) {
+            const data = semuaData.find(d => d.id === rowIndex);
+            if (!data) return;
+            
+            document.getElementById('editId').value = rowIndex;
+            document.getElementById('editRowIndex').value = rowIndex;
+            document.getElementById('editTanggal').value = data.tanggal;
+            document.getElementById('editLokasi').value = data.lokasi;
+            document.getElementById('editUnit').value = data.unit;
+            document.getElementById('editHmAwal').value = data.hmAwal;
+            document.getElementById('editHmAkhir').value = data.hmAkhir;
+            document.getElementById('editHmKerja').value = data.hmKerja;
+            document.getElementById('editBbm').value = data.bbm;
+            
+            document.getElementById('modalEdit').style.display = 'flex';
+        }
+
+        // Hitung otomatis di modal
+        function hitungEditKerja() {
+            const awal = parseFloat(document.getElementById('editHmAwal').value) || 0;
+            const akhir = parseFloat(document.getElementById('editHmAkhir').value) || 0;
+            document.getElementById('editHmKerja').value = (akhir - awal).toFixed(1);
+        }
+
+        // Tutup modal
+        function tutupModal() {
+            document.getElementById('modalEdit').style.display = 'none';
+        }
+
+        // Simpan edit
+        async function simpanEdit() {
+            const rowIndex = document.getElementById('editRowIndex').value;
+            const dataBaru = {
+                tanggal: document.getElementById('editTanggal').value,
+                lokasi: document.getElementById('editLokasi').value,
+                unit: document.getElementById('editUnit').value,
+                hmAwal: document.getElementById('editHmAwal').value,
+                hmAkhir: document.getElementById('editHmAkhir').value,
+                hmKerja: document.getElementById('editHmKerja').value,
+                bbm: document.getElementById('editBbm').value
+            };
+            
+            try {
+                // Panggil fungsi edit di Google Apps Script
+                await fetch(`${URL_GOOGLE_SHEETS}?row=${rowIndex}`, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(dataBaru)
+                });
+                tutupModal();
+                tampilkanPesan('✅ Data berhasil diperbarui!', 'sukses');
+                ambilData();
+            } catch (err) {
+                // Alternatif: karena tidak semua server mendukung PUT, cukup muat ulang + beri tahu
+                tutupModal();
+                tampilkanPesan('⚠️ Edit langsung lewat Google Sheets jika perlu, lalu klik Muat Ulang', 'info');
+                ambilData();
+            }
+        }
+
+        // Konfirmasi hapus
+        async function konfirmasiHapus(rowIndex) {
+            if (!confirm('⚠️ Yakin ingin menghapus data ini? Tindakan ini tidak bisa dibatalkan!')) return;
+            
+            try {
+                // Versi sederhana: beri tahu cara manual yang aman
+                tampilkanPesan('⚠️ Untuk keamanan, silakan hapus baris langsung di Google Sheets, lalu klik Muat Ulang', 'info');
+                // Untuk fitur hapus otomatis penuh butuh pengaturan lanjutan
+                ambilData();
+            } catch (err) {
+                tampilkanPesan('❌ Gagal menghapus', 'error');
+            }
+        }
+
+        // Tampilkan pesan
+        function tampilkanPesan(teks, jenis) {
+            const status = document.getElementById('status');
+            status.textContent = teks;
+            status.className = `status-box ${jenis}`;
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 5000);
+        }
+
+        // Tutup modal jika klik di luar
+        document.getElementById('modalEdit').addEventListener('click', function(e) {
+            if (e.target === this) tutupModal();
+        });
+    </script>
+
+</body>
+</html>
